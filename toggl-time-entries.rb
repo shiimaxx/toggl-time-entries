@@ -12,21 +12,14 @@ VERSION = '0.1.0'
 
 TOGGL_API_TOKEN = ENV['TOGGL_API_TOKEN']
 
-def post_time_entry(workspace_id, description, project_id, start, stop)
+def post_time_entry(workspace_id, parameters)
   uri = URI("https://api.track.toggl.com/api/v9/workspaces/#{workspace_id}/time_entries")
 
   http = Net::HTTP.new(uri.host, uri.port)
   http.use_ssl = true
   req = Net::HTTP::Post.new(uri.path)
   req["Content-Type"] = 'application/json'
-  req.body = {
-    description: description,
-    project_id: project_id.to_i,
-    start: start,
-    stop: stop,
-    created_with: 'https://github.com/shiimaxx/toggl-time-entries',
-    wid: workspace_id.to_i,
-  }.to_json
+  req.body = parameters.to_json
   req.basic_auth(TOGGL_API_TOKEN, 'api_token')
   res = http.request(req)
   puts res.body
@@ -38,14 +31,16 @@ def ensure_utc(datetime_str)
 end
 
 def main
-  workspace_id = -1
-  OptionParser.new do |opts|
-    opts.on('--workspace-id WORKSPACE_ID') { |v| workspace_id = v }
-  end.parse(ARGV)  
+  options = {}
 
-  filename = ARGV.last
+  parser = OptionParser.new
+  parser.on('--workspace-id WORKSPACE_ID') {|v| options[:workspace_id] = v.to_i}
+  parser.on('--dry-run') {|v| options[:dry_run] = v}
+  argv = parser.parse(ARGV)
 
-  if workspace_id.nil?
+  filename = argv[0]
+
+  if options[:workspace_id].nil?
     puts "Workspace ID not provided"
     exit 1
   end
@@ -57,9 +52,20 @@ def main
 
   CSV.foreach(filename) do |row|
     description, project_id, start, stop = row
-    puts description, project_id, ensure_utc(start), ensure_utc(stop)
-    post_time_entry(workspace_id, description, project_id, ensure_utc(start), ensure_utc(stop))
-    sleep 0.5
+    parameters = {
+      description: description,
+      project_id: project_id.to_i,
+      start: ensure_utc(start),
+      stop: ensure_utc(stop),
+      created_with: 'https://github.com/shiimaxx/toggl-time-entries',
+      wid: options[:workspace_id],
+    }
+    if options[:dry_run]
+      puts parameters
+    else
+      post_time_entry(options[:workspace_id], parameters)  
+      sleep 0.5
+    end
   end
 end
 
