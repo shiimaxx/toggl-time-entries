@@ -34,9 +34,9 @@ def main
   options = {}
 
   parser = OptionParser.new
-  parser.on('--billable') {|v| options[:billable] = v}
-  parser.on('--workspace-id WORKSPACE_ID') {|v| options[:workspace_id] = v.to_i}
-  parser.on('--dry-run') {|v| options[:dry_run] = v}
+  parser.on('-b', '--billable', 'Register time entries as billable') {|v| options[:billable] = v}
+  parser.on('-w', '--workspace-id WORKSPACE_ID', 'Workspace ID (required)') {|v| options[:workspace_id] = v.to_i}
+  parser.on('-d', '--dry-run', 'Display parameters only') {|v| options[:dry_run] = v}
   argv = parser.parse(ARGV)
 
   filename = argv[0]

@@ -5,7 +5,10 @@ toggl-time-entries is a command-line tool for registering work hours using Toggl
 ## Usage
 
 ```
-toggl-time-entries --workspace-id <workspace id> filename
+Usage: toggl-time-entries [options] <filename>
+    -b, --billable                   Register time entries as billable
+    -w, --workspace-id WORKSPACE_ID  Workspace ID (required)
+    -d, --dry-run                    Display parameters only
 ```
 
 The argument filename is required. Specify a csv file in the following format.
