@@ -34,6 +34,7 @@ def main
   options = {}
 
   parser = OptionParser.new
+  parser.on('--billable') {|v| options[:billable] = v}
   parser.on('--workspace-id WORKSPACE_ID') {|v| options[:workspace_id] = v.to_i}
   parser.on('--dry-run') {|v| options[:dry_run] = v}
   argv = parser.parse(ARGV)
@@ -53,6 +54,7 @@ def main
   CSV.foreach(filename) do |row|
     description, project_id, start, stop = row
     parameters = {
+      billable: options[:billable].nil? ? false : options[:billable],
       description: description,
       project_id: project_id.to_i,
       start: ensure_utc(start),
