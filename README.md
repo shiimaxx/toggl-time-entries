@@ -19,3 +19,10 @@ description,project_id,start,stop
 
 Refer to the following link to understand what the fields represent:
 https://developers.track.toggl.com/docs/api/time_entries#post-timeentries
+
+## API token
+
+toggl-time-entries uses API token to authenticate with Toggl API.
+Please set the API Token to the environment variable `TOGGL_API_TOKEN`.
+
+see also https://developers.track.toggl.com/docs/authentication#http-basic-auth-with-api-token
