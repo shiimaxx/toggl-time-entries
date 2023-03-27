@@ -65,7 +65,7 @@ def main
     if options[:dry_run]
       puts parameters
     else
-      post_time_entry(options[:workspace_id], parameters)  
+      post_time_entry(options[:workspace_id], parameters)
       sleep 0.5
     end
   end
