@@ -37,7 +37,7 @@ def post_time_entry(workspace_id, parameters)
   res.body
 end
 
-def ensure_utc(datetime)
+def utc(datetime)
   datetime.utc? ? datetime : datetime.utc.strftime('%Y-%m-%dT%H:%M:%SZ')
 end
 
@@ -89,8 +89,8 @@ def main
           billable: options[:billable].nil? ? false : options[:billable],
           description: entry[:description],
           project_id: entry[:project_id].to_i,
-          start: ensure_utc(entry[:start]),
-          stop: ensure_utc(entry[:stop]),
+          start: utc(entry[:start]),
+          stop: utc(entry[:stop]),
           created_with: 'https://github.com/shiimaxx/toggl-time-entries',
           wid: options[:workspace_id],
         }
